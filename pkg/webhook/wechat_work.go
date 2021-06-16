@@ -1,0 +1,51 @@
+package webhook
+
+import "os"
+
+type wechatWork struct {
+    *webhook
+    mentionedList       []string
+    mentionedMobileList []string
+}
+
+func (w *wechatWork) SetMentionedList(mentionedList []string) {
+    w.mentionedList = mentionedList
+}
+
+func (w *wechatWork) SetMentionedMobileList(mentionedMobileList []string) {
+    w.mentionedMobileList = mentionedMobileList
+}
+
+func (w wechatWork) Text() {
+    w.send(map[string]interface{}{
+        "msgtype": "text",
+        "text": map[string]interface{}{
+            "content":               w.content,
+            "mentioned_list":        w.mentionedList,
+            "mentioned_mobile_list": w.mentionedMobileList,
+        },
+    })
+}
+
+func (w wechatWork) Markdown() {
+    w.url = os.Getenv("WEBHOOK_WECHAT_WORK_URL")
+    w.send(map[string]interface{}{
+        "msgtype": "markdown",
+        "markdown": map[string]interface{}{
+            "content":               w.content,
+            "mentioned_list":        w.mentionedList,
+            "mentioned_mobile_list": w.mentionedMobileList,
+        },
+    })
+}
+
+func NewWeChatWork() *wechatWork {
+    return &wechatWork{
+        webhook: &webhook{
+            content: "",
+            url:     os.Getenv("WEBHOOK_WECHAT_WORK_URL"),
+        },
+        mentionedList:       make([]string, 0),
+        mentionedMobileList: make([]string, 0),
+    }
+}
