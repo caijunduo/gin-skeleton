@@ -17,6 +17,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/cast v1.3.1
+	github.com/spf13/viper v1.8.0
 	github.com/uniplaces/carbon v0.1.6
 	github.com/w3liu/go-common v0.0.0-20210108072342-826b2f3582be
 	go.uber.org/zap v1.17.0

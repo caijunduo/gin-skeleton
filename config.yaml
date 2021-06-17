@@ -1,0 +1,53 @@
+app:
+  port: ${APP_PORT:3031}
+  readTimeout: ${APP_READ_TIMEOUT:20}
+  writeTimeout: ${APP_WRITE_TIMEOUT:20}
+  crontab: ${CRONTAB_SWITCH:true}
+  logger: ${LOGGER_SWITCH:true}
+  database: ${DB_SWITCH:true}
+  redis: ${REDIS_SWITCH:true}
+logger:
+  savePath: ${LOGGER_SAVE_PATH:logs}
+  maxSize: ${LOGGER_MAX_SIZE:128}
+  maxAge: ${LOGGER_MAX_AGE:7}
+  maxBackups: ${LOGGER_MAX_BACKUPS:30}
+  compress: ${LOGGER_MAX_COMPRESS:true}
+database:
+  default:
+    driver: mysql
+    host: ${DB_HOST:127.0.0.1}
+    port: ${DB_PORT:3306}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD}
+    database: ${DB_DATABASE}
+    charset: utf8mb4
+    parseTime: True
+    loc: Local
+    prefix:
+    setMaxOpenConns: 0
+    setMaxIdleConns: 0
+redis:
+  default:
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
+    auth: ${REDIS_AUTH}
+    db: ${REDIS_DB:0}
+    maxRetries: 1
+jwt:
+  default:
+    key: ${JWT_KEY}
+    issuer: ${JWT_ISSUER}
+    subject: ${JWT_SUBJECT}
+    expireMinutes: ${JWT_EXPIRE_MINUTES:60}
+cors:
+  allowOrigin: ${CORS_ALLOW_ORIGIN:*}
+  allowMethods: ${CORS_ALLOW_METHODS:POST, GET, OPTIONS, PUT, DELETE, UPDATE}
+  allowHeaders: ${CORS_ALLOW_HEADERS:Origin, X-Requested-With, Content-Type, Accept, Authorization}
+  allowExposeHeaders: ${CORS_EXPOSE_HEADERS:Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Cache-Control, Content-Language, Content-Type}
+  allowCredentials: ${CORS_ALLOW_CREDENTIALS:true}
+webhook:
+  wechat_work:
+    url: ${WEBHOOK_WECHAT_WORK_URL}
+  dingtalk:
+    url: ${WEBHOOK_DINGTALK_URL}
+    secret: ${WEBHOOK_DINGTALK_SECRET}

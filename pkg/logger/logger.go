@@ -3,7 +3,7 @@ package logger
 import (
     "fmt"
     "github.com/gin-gonic/gin"
-    "github.com/spf13/cast"
+    "github.com/spf13/viper"
     "go.uber.org/zap"
     "go.uber.org/zap/zapcore"
     "gopkg.in/natefinch/lumberjack.v2"
@@ -20,11 +20,16 @@ func New() (err error) {
     now := time.Now()
 
     hook := lumberjack.Logger{
-        Filename:   fmt.Sprintf("%s/skeleton-%04d%02d%02d.log", os.Getenv("LOG_PATH"), now.Year(), now.Month(), now.Day()),
-        MaxSize:    cast.ToInt(os.Getenv("LOG_MAX_SIZE")),
-        MaxAge:     cast.ToInt(os.Getenv("LOG_MAX_AGE")),
-        MaxBackups: cast.ToInt(os.Getenv("LOG_MAX_BACKUPS")),
-        Compress:   cast.ToBool(os.Getenv("LOG_COMPRESS")),
+        Filename: fmt.Sprintf("%s/skeleton-%04d%02d%02d.log",
+            viper.GetString("logger.savePath"),
+            now.Year(),
+            now.Month(),
+            now.Day(),
+        ),
+        MaxSize:    viper.GetInt("logger.maxSize"),
+        MaxAge:     viper.GetInt("logger.maxAge"),
+        MaxBackups: viper.GetInt("logger.maxBackups"),
+        Compress:   viper.GetBool("logger.compress"),
     }
 
     var writes = []zapcore.WriteSyncer{zapcore.AddSync(&hook)}

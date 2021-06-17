@@ -1,56 +1,45 @@
 package main
 
 import (
-    "fmt"
-    "github.com/go-redis/redis"
     _ "github.com/joho/godotenv/autoload"
-    "github.com/spf13/cast"
     _ "github.com/spf13/cast"
-    "os"
+    "github.com/spf13/viper"
     "skeleton/internal"
+    "skeleton/pkg/configx"
     "skeleton/pkg/logger"
-    "skeleton/pkg/mysql"
+    "skeleton/pkg/mysqlx"
     "skeleton/pkg/redisx"
     "skeleton/pkg/server"
 )
 
 func main() {
-    if cast.ToBool(os.Getenv("LOG_SWITCH")) {
+    if err := configx.New(); err != nil {
+        panic(err)
+    }
+
+    if viper.GetBool("app.logger") {
         if err := logger.New(); err != nil {
             panic(err)
         }
     }
 
-    if cast.ToBool(os.Getenv("DB_SWITCH")) {
-        if _, err := mysql.New(mysql.Dsn{
-            Driver:   "mysql",
-            Host:     os.Getenv("DB_HOST"),
-            Port:     os.Getenv("DB_PORT"),
-            Username: os.Getenv("DB_USERNAME"),
-            Password: os.Getenv("DB_PASSWORD"),
-            Database: os.Getenv("DB_DATABASE"),
-            Charset:  os.Getenv("DB_CHARSET"),
-        }); err != nil {
+    if viper.GetBool("app.database") {
+        if err := mysqlx.New(); err != nil {
             panic(err)
         }
     }
 
-    if cast.ToBool(os.Getenv("REDIS_SWITCH")) {
-        if _, err := redisx.New(redis.Options{
-            Addr:       fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT")),
-            Password:   os.Getenv("REDIS_AUTH"),
-            DB:         cast.ToInt(os.Getenv("REDIS_DB")),
-            MaxRetries: 1,
-        }); err != nil {
+    if viper.GetBool("app.redis") {
+        if err := redisx.New(); err != nil {
             panic(err)
         }
     }
 
-    if cast.ToBool(os.Getenv("CRONTAB_SWITCH")) {
-        server.Group.Go(func() error {
+    if viper.GetBool("app.crontab") {
+        server.Group().Go(func() error {
             return internal.Crontab()
         })
     }
 
-    server.New(os.Getenv("APP_PORT"), internal.Routes())
+    server.New(internal.Routes())
 }

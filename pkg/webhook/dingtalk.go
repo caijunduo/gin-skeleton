@@ -2,8 +2,8 @@ package webhook
 
 import (
     "fmt"
+    "github.com/spf13/viper"
     "log"
-    "os"
     "skeleton/pkg/cryptox"
     "time"
 )
@@ -79,9 +79,9 @@ func NewDingTalk() *dingTalk {
     return &dingTalk{
         webhook: &webhook{
             content: "",
-            url:     os.Getenv("WEBHOOK_DINGTALK_URL"),
+            url:     viper.GetString("webhook.dingtalk.url"),
         },
-        secret:  os.Getenv("WEBHOOK_DINGTALK_SECRET"),
+        secret:  viper.GetString("webhook.dingtalk.secret"),
         title:   "",
         mobiles: make([]string, 0),
         userIds: make([]string, 0),

@@ -1,27 +1,32 @@
 package server
 
 import (
+    "github.com/spf13/viper"
+    "go.uber.org/zap"
     "golang.org/x/sync/errgroup"
-    "log"
     "net/http"
     "time"
 )
 
-var Group errgroup.Group
+var g errgroup.Group
 
-func New(port string, handler http.Handler) {
+func New(handler http.Handler) {
     s := &http.Server{
-        Addr:         ":" + port,
+        Addr:         ":" + viper.GetString("app.port"),
         Handler:      handler,
-        ReadTimeout:  20 * time.Minute,
-        WriteTimeout: 20 * time.Minute,
+        ReadTimeout:  time.Duration(viper.GetInt("app.readTimeout")) * time.Minute,
+        WriteTimeout: time.Duration(viper.GetInt("app.writeTimeout")) * time.Minute,
     }
 
-    Group.Go(func() error {
+    g.Go(func() error {
         return s.ListenAndServe()
     })
 
-    if err := Group.Wait(); err != nil {
-        log.Fatal(err)
+    if err := g.Wait(); err != nil {
+        zap.L().Error("[Server]", zap.Error(err))
     }
+}
+
+func Group() *errgroup.Group {
+    return &g
 }

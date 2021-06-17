@@ -2,13 +2,12 @@ package jwtx
 
 import (
     "github.com/dgrijalva/jwt-go"
-    "github.com/spf13/cast"
+    "github.com/spf13/viper"
     "github.com/uniplaces/carbon"
-    "os"
 )
 
 var (
-    jwtKey = []byte(os.Getenv("JWT_KEY"))
+    jwtKey = []byte(viper.GetString("jwt.default.key"))
 )
 
 type Claims struct {
@@ -20,10 +19,10 @@ func New(uuid string) (token string, err error) {
     c := &Claims{
         UUID: uuid,
         StandardClaims: jwt.StandardClaims{
-            ExpiresAt: carbon.Now().AddMinutes(cast.ToInt("JWT_EXPIRE_MINUTES")).Unix(), // 过期时间
+            ExpiresAt: carbon.Now().AddMinutes(viper.GetInt("jwt.default.expireMinutes")).Unix(), // 过期时间
             IssuedAt:  carbon.Now().Unix(),
-            Issuer:    os.Getenv("JWT_ISSUER"),
-            Subject:   os.Getenv("JWT_SUBJECT"),
+            Issuer:    viper.GetString("jwt.default.issuer"),
+            Subject:   viper.GetString("jwt.default.subject"),
         },
     }
     t := jwt.NewWithClaims(jwt.SigningMethodHS256, c)

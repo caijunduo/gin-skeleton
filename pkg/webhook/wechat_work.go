@@ -1,6 +1,9 @@
 package webhook
 
-import "os"
+import (
+    "github.com/spf13/viper"
+    "os"
+)
 
 type wechatWork struct {
     *webhook
@@ -43,7 +46,7 @@ func NewWeChatWork() *wechatWork {
     return &wechatWork{
         webhook: &webhook{
             content: "",
-            url:     os.Getenv("WEBHOOK_WECHAT_WORK_URL"),
+            url:     viper.GetString("webhook.wechat_work.url"),
         },
         mentionedList:       make([]string, 0),
         mentionedMobileList: make([]string, 0),
