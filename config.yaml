@@ -34,7 +34,7 @@ redis:
     db: ${REDIS_DB:0}
     maxRetries: 1
 jwt:
-  default:
+  account:
     key: ${JWT_KEY}
     issuer: ${JWT_ISSUER}
     subject: ${JWT_SUBJECT}
