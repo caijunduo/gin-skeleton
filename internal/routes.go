@@ -9,8 +9,9 @@ func Routes() *gin.Engine {
     r := gin.New()
 
     r.Use(handler.Recovery)
-    r.Use(handler.Logger)
+    r.Use(handler.RequestId)
     r.Use(handler.Cors)
+    r.Use(handler.Logger)
 
     r.GET("/", handler.Example)
 
