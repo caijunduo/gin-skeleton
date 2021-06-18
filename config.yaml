@@ -3,6 +3,7 @@ app:
   readTimeout: ${APP_READ_TIMEOUT:20}
   writeTimeout: ${APP_WRITE_TIMEOUT:20}
   locale: ${APP_LOCALE:en}
+  timezone: ${APP_TIMEZONE|PRC}
   crontab: ${CRONTAB_SWITCH:true}
   logger: ${LOGGER_SWITCH:true}
   database: ${DB_SWITCH:true}
@@ -40,6 +41,11 @@ jwt:
     issuer: ${JWT_ISSUER}
     subject: ${JWT_SUBJECT}
     expireMinutes: ${JWT_EXPIRE_MINUTES:60}
+signature:
+  api:
+    appKey: ${SIGNATURE_API_APP_KEY}
+    appSecret: ${SIGNATURE_API_APP_SECRET}
+    expires: ${SIGNATURE_API_EXPIRES|0} # 单位: 分
 cors:
   allowOrigin: ${CORS_ALLOW_ORIGIN:*}
   allowMethods: ${CORS_ALLOW_METHODS:POST, GET, OPTIONS, PUT, DELETE, UPDATE}

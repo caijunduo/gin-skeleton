@@ -12,6 +12,8 @@ func Routes() *gin.Engine {
     r.Use(handler.RequestId)
     r.Use(handler.Cors)
     r.Use(handler.Logger)
+    // r.Use(handler.Authorization("account"))
+    // r.Use(handler.Signature("api"))
 
     r.GET("/", handler.Example)
 
