@@ -10,6 +10,7 @@ import (
     "skeleton/pkg/mysqlx"
     "skeleton/pkg/redisx"
     "skeleton/pkg/server"
+    "skeleton/pkg/validatorx"
 )
 
 func main() {
@@ -39,6 +40,10 @@ func main() {
         server.Group().Go(func() error {
             return internal.Crontab()
         })
+    }
+
+    if err := validatorx.New(); err != nil {
+        panic(err)
     }
 
     server.New(internal.Routes())
