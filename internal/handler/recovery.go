@@ -2,12 +2,9 @@ package handler
 
 import (
     "github.com/gin-gonic/gin"
-    "github.com/go-playground/validator/v10"
     "net/http"
     "runtime/debug"
     "skeleton/pkg/exception"
-    "skeleton/pkg/validatorx"
-    "strings"
 )
 
 func Recovery(c *gin.Context) {
@@ -25,10 +22,6 @@ func Recovery(c *gin.Context) {
                 res["err_code"] = v.Code()
                 res["err_message"] = v.Message()
                 c.AbortWithStatusJSON(v.Status(), res)
-            case validator.ValidationErrors:
-                res["err_message"] = http.StatusBadRequest
-                res["err_message"] = removeTopStruct(v.Translate(validatorx.Translator))
-                c.AbortWithStatusJSON(http.StatusBadRequest, res)
             default:
                 res["err_code"] = http.StatusInternalServerError
                 res["err_message"] = http.StatusText(http.StatusInternalServerError)
@@ -38,12 +31,4 @@ func Recovery(c *gin.Context) {
     }()
 
     c.Next()
-}
-
-func removeTopStruct(fields map[string]string) map[string]string {
-    rsp := map[string]string{}
-    for field, err := range fields {
-        rsp[field[strings.Index(field, ".")+1:]] = err
-    }
-    return rsp
 }
