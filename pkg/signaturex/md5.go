@@ -11,11 +11,15 @@ import (
 )
 
 type md5 struct {
-    conn      string
-    data      map[string]interface{}
-    noEncrypt string
-    noMd5     string
-    md5       string
+    conn            string
+    data            map[string]interface{}
+    beforeEncrypt   string
+    beforeSignature string
+    signature       string
+}
+
+func (m md5) getKey(key string) string {
+    return "signature." + m.conn + "." + key
 }
 
 func (m *md5) SetData(data map[string]interface{}) *md5 {
@@ -35,9 +39,9 @@ func (m *md5) encrypt() *md5 {
 
     for i := 0; i < len(key); i++ {
         if i == 0 {
-            m.noEncrypt = fmt.Sprintf("%v=%v", key[i], m.data[key[i]])
+            m.beforeEncrypt = fmt.Sprintf("%v=%v", key[i], m.data[key[i]])
         } else {
-            m.noEncrypt += fmt.Sprintf("&%v=%v", key[i], m.data[key[i]])
+            m.beforeEncrypt += fmt.Sprintf("&%v=%v", key[i], m.data[key[i]])
         }
     }
     return m
@@ -51,25 +55,23 @@ func (m *md5) Verify() error {
         return errors.New("signature field is missing")
     }
 
-    key := "signature." + m.conn + "."
-
-    if ak != viper.GetString(key+"appKey") {
-        return errors.New("")
+    if ak != viper.GetString(m.getKey("appKey")) {
+        return errors.New("signature app key error")
     }
 
-    expires := viper.GetInt(key + "expires")
+    expires := viper.GetInt(m.getKey("expires"))
 
     if expires > 0 {
         now := carbon.Now()
         now.SetTimestamp(ts)
         if now.Between(carbon.Now(), carbon.Now().AddMinutes(expires), false) {
-            return errors.New("signature app key error")
+            return errors.New("signature expired")
         }
     }
 
     m.Generate()
 
-    if sn == "" || sn != m.md5 {
+    if sn == "" || sn != m.signature {
         return errors.New("signature verification failed")
     }
 
@@ -77,23 +79,23 @@ func (m *md5) Verify() error {
 }
 
 func (m *md5) Generate() *md5 {
-    appSecret := viper.GetString("signature." + m.conn + ".appSecret")
+    appSecret := viper.GetString(m.getKey("appSecret"))
     m.encrypt()
-    m.noMd5 = appSecret + m.noEncrypt + appSecret
-    m.md5 = cryptox.MD5(m.noMd5)
+    m.beforeSignature = appSecret + m.beforeEncrypt + appSecret
+    m.signature = cryptox.MD5(m.beforeSignature)
     return m
 }
 
-func (m md5) GetNoEncrypt() string {
-    return m.noEncrypt
+func (m md5) GetBeforeEncrypt() string {
+    return m.beforeEncrypt
 }
 
-func (m md5) GetNoMd5() string {
-    return m.noMd5
+func (m md5) GetBeforeSignature() string {
+    return m.beforeSignature
 }
 
-func (m md5) GetMd5() string {
-    return m.md5
+func (m md5) GetSignature() string {
+    return m.signature
 }
 
 func NewMd5(conn string) *md5 {
