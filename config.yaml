@@ -21,9 +21,7 @@ database:
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD}
     database: ${DB_DATABASE}
-    charset: utf8mb4
-    parseTime: True
-    loc: Local
+    more: ?charset=utf8mb4&parseTime=True&loc=Local
     prefix:
     setMaxOpenConns: 0
     setMaxIdleConns: 0
