@@ -34,6 +34,8 @@ func New() error {
             } else {
                 viper.Set(k, os.Getenv(key))
             }
+        } else {
+            viper.Set(k, value)
         }
     }
 
