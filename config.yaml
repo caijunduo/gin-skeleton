@@ -2,7 +2,7 @@ app:
   port: ${APP_PORT:3031}
   readTimeout: ${APP_READ_TIMEOUT:20}
   writeTimeout: ${APP_WRITE_TIMEOUT:20}
-  locale: ${APP_LOCALE:en}
+  locale: ${APP_LOCALE:zh}
   crontab: ${CRONTAB_SWITCH:true}
   logger: ${LOGGER_SWITCH:true}
   database: ${DB_SWITCH:true}

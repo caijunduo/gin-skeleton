@@ -16,7 +16,7 @@ func Routes() *gin.Engine {
     // r.Use(handler.Authorization("account"))
     // r.Use(handler.Signature("api"))
 
-    r.GET("/", middleware.Before, middleware.After, handler.Example)
+    r.Any("/", middleware.Before, middleware.After, handler.Example)
 
     return r
 }
