@@ -1,5 +1,5 @@
 package request
 
-type ExampleRequest struct {
-    PaginationRequest
+type Example struct {
+    Pagination
 }
