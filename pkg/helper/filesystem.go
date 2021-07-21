@@ -1,32 +1,34 @@
-package filesystemx
+package helper
 
 import (
     "log"
     "os"
 )
 
-func IsExists(path string) (os.FileInfo, bool) {
+type filesystem struct{}
+
+func (fs *filesystem) IsExists(path string) (os.FileInfo, bool) {
     f, err := os.Stat(path)
     return f, err == nil || os.IsExist(err)
 }
 
-func IsDir(path string) (os.FileInfo, bool) {
-    f, flag := IsExists(path)
+func (fs *filesystem) IsDir(path string) (os.FileInfo, bool) {
+    f, flag := fs.IsExists(path)
     return f, flag && f.IsDir()
 }
 
-func IsFile(path string) (os.FileInfo, bool) {
-    f, flag := IsExists(path)
+func (fs *filesystem) IsFile(path string) (os.FileInfo, bool) {
+    f, flag := fs.IsExists(path)
     return f, flag && !f.IsDir()
 }
 
-func OpenFile(path string, flag int, perm os.FileMode) (*os.File, error) {
+func (fs *filesystem) OpenFile(path string, flag int, perm os.FileMode) (*os.File, error) {
     var (
         f   *os.File
         b   bool
         err error
     )
-    _, b = IsFile(path)
+    _, b = fs.IsFile(path)
     if b {
         f, _ = os.OpenFile(path, flag, perm)
     } else {
@@ -35,12 +37,12 @@ func OpenFile(path string, flag int, perm os.FileMode) (*os.File, error) {
     return f, err
 }
 
-func WriteFile(path string, str string) error {
+func (fs *filesystem) WriteFile(path string, str string) error {
     var (
         f   *os.File
         err error
     )
-    f, err = OpenFile(path, os.O_APPEND, os.ModePerm)
+    f, err = fs.OpenFile(path, os.O_APPEND, os.ModePerm)
 
     defer func() {
         if err = f.Close(); err != nil {

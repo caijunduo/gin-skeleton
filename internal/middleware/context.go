@@ -2,10 +2,10 @@ package middleware
 
 import (
     "github.com/gin-gonic/gin"
-    "log"
+    "skeleton/pkg/ginx"
 )
 
-func After(c *gin.Context)  {
+func Context(c *gin.Context) {
+    ginx.New(c)
     c.Next()
-    log.Println("after")
 }

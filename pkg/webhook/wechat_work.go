@@ -1,54 +1,79 @@
 package webhook
 
 import (
+    "fmt"
+    "github.com/gin-gonic/gin"
+    "github.com/go-resty/resty/v2"
     "github.com/spf13/viper"
-    "os"
+    "log"
+    "time"
 )
 
-type wechatWork struct {
-    *webhook
-    mentionedList       []string
-    mentionedMobileList []string
+func WeChatWork(title string) *weChatWork {
+    w := &weChatWork{
+        title: title,
+    }
+    w.color = w.getColor()
+    return w
 }
 
-func (w *wechatWork) SetMentionedList(mentionedList []string) {
-    w.mentionedList = mentionedList
+type weChatWork struct {
+    title   string
+    content string
+    items   string
+
+    color string
 }
 
-func (w *wechatWork) SetMentionedMobileList(mentionedMobileList []string) {
-    w.mentionedMobileList = mentionedMobileList
+func (w *weChatWork) getColor() string {
+    switch gin.Mode() {
+    case gin.TestMode:
+        return "info"
+    case gin.ReleaseMode:
+        return "warning"
+    default:
+        return "comment"
+    }
 }
 
-func (w wechatWork) Text() {
-    w.send(map[string]interface{}{
-        "msgtype": "text",
-        "text": map[string]interface{}{
-            "content":               w.content,
-            "mentioned_list":        w.mentionedList,
-            "mentioned_mobile_list": w.mentionedMobileList,
-        },
-    })
+func (w *weChatWork) Content(content string) *weChatWork {
+    w.content = content + "\n"
+    return w
 }
 
-func (w wechatWork) Markdown() {
-    w.url = os.Getenv("WEBHOOK_WECHAT_WORK_URL")
-    w.send(map[string]interface{}{
-        "msgtype": "markdown",
-        "markdown": map[string]interface{}{
-            "content":               w.content,
-            "mentioned_list":        w.mentionedList,
-            "mentioned_mobile_list": w.mentionedMobileList,
-        },
-    })
+func (w *weChatWork) before() string {
+    return fmt.Sprintf("> Datetime：<font color=\"%s\">%s</font>\n", w.color, time.Now().Format("2006-01-02 15:04:05")) +
+        fmt.Sprintf("> Environment：<font color=\"%s\">%s</font>\n", w.color, gin.Mode())
 }
 
-func NewWeChatWork() *wechatWork {
-    return &wechatWork{
-        webhook: &webhook{
-            content: "",
-            url:     viper.GetString("webhook.wechat_work.url"),
-        },
-        mentionedList:       make([]string, 0),
-        mentionedMobileList: make([]string, 0),
+func (w *weChatWork) Item(key string, val string) *weChatWork {
+    w.items += fmt.Sprintf("> %s：<font color=\"%s\">%s</font>\n", key, w.color, val)
+    return w
+}
+
+func (w *weChatWork) result() string {
+    title := ""
+    if w.content == "" {
+        title = w.title + "\n"
+    } else {
+        title = w.title + "：" + w.content
+    }
+    return title + w.before() + w.items
+}
+
+func (w *weChatWork) Send() {
+    if gin.IsDebugging() {
+        return
+    }
+    _, err := resty.New().R().
+        SetBody(map[string]interface{}{
+            "msgtype": "markdown",
+            "markdown": map[string]interface{}{
+                "content": w.result(),
+            },
+        }).Post(viper.GetString("webhook.wechat_work.url"))
+    if err != nil {
+        log.Println("[WebHook] 异常推送失败 ", err)
+        return
     }
 }

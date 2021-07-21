@@ -21,7 +21,7 @@ database:
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD}
     database: ${DB_DATABASE}
-    more: ?charset=utf8mb4&parseTime=True&loc=Local
+    more: ?charset=utf8mb4&parseTime=False&loc=Local
     prefix:
     setMaxOpenConns: 0
     setMaxIdleConns: 0
@@ -60,6 +60,3 @@ cors:
 webhook:
   wechat_work:
     url: ${WEBHOOK_WECHAT_WORK_URL}
-  dingtalk:
-    url: ${WEBHOOK_DINGTALK_URL}
-    secret: ${WEBHOOK_DINGTALK_SECRET}

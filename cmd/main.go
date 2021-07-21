@@ -6,6 +6,7 @@ import (
     "github.com/spf13/viper"
     "skeleton/internal"
     "skeleton/pkg/configx"
+    "skeleton/pkg/helper"
     "skeleton/pkg/logger"
     "skeleton/pkg/mysqlx"
     "skeleton/pkg/redisx"
@@ -14,6 +15,8 @@ import (
 )
 
 func main() {
+    helper.New()
+
     if err := configx.New(); err != nil {
         panic(err)
     }
@@ -34,12 +37,6 @@ func main() {
         if err := redisx.New(); err != nil {
             panic(err)
         }
-    }
-
-    if viper.GetBool("app.crontab") {
-        server.Group().Go(func() error {
-            return internal.Crontab()
-        })
     }
 
     if err := validatorx.New(); err != nil {

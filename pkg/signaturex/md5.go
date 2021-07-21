@@ -6,7 +6,7 @@ import (
     "github.com/spf13/cast"
     "github.com/spf13/viper"
     "github.com/uniplaces/carbon"
-    "skeleton/pkg/cryptox"
+    "skeleton/pkg/helper"
     "sort"
 )
 
@@ -82,7 +82,7 @@ func (m *md5) Generate() *md5 {
     appSecret := viper.GetString(m.getKey("appSecret"))
     m.encrypt()
     m.beforeSignature = appSecret + m.beforeEncrypt + appSecret
-    m.signature = cryptox.MD5(m.beforeSignature)
+    m.signature = helper.Crypto.MD5(m.beforeSignature)
     return m
 }
 
