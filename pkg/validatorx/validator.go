@@ -10,7 +10,6 @@ import (
     "github.com/go-playground/validator/v10"
     enTranslations "github.com/go-playground/validator/v10/translations/en"
     zhTranslations "github.com/go-playground/validator/v10/translations/zh"
-    "github.com/spf13/viper"
 )
 
 var (
@@ -19,13 +18,12 @@ var (
     ok         bool
 )
 
-func New() error {
+func New(locale string) error {
     Validator, ok = binding.Validator.Engine().(*validator.Validate)
     if !ok {
         return errors.New("validator engine error")
     }
 
-    locale := viper.GetString("app.locale")
     enLocale := en.New()
     zhLocale := zh.New()
     uni := ut.New(enLocale, enLocale, zhLocale)

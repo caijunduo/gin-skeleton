@@ -3,15 +3,18 @@ package logger
 import (
     "fmt"
     "github.com/gin-gonic/gin"
-    "github.com/spf13/viper"
     "go.uber.org/zap"
     "go.uber.org/zap/zapcore"
     "gopkg.in/natefinch/lumberjack.v2"
     "os"
+    "skeleton/configs"
     "time"
 )
 
-func New() (err error) {
+func New() {
+    if !configs.Config.Logger.Mode {
+        return
+    }
     ec := zap.NewProductionEncoderConfig()
     ec.EncodeTime = zapcore.ISO8601TimeEncoder
     ec.EncodeLevel = zapcore.CapitalLevelEncoder
@@ -21,15 +24,15 @@ func New() (err error) {
 
     hook := lumberjack.Logger{
         Filename: fmt.Sprintf("%s/skeleton-%04d%02d%02d.log",
-            viper.GetString("logger.savePath"),
+            configs.Config.Logger.SavePath,
             now.Year(),
             now.Month(),
             now.Day(),
         ),
-        MaxSize:    viper.GetInt("logger.maxSize"),
-        MaxAge:     viper.GetInt("logger.maxAge"),
-        MaxBackups: viper.GetInt("logger.maxBackups"),
-        Compress:   viper.GetBool("logger.compress"),
+        MaxSize:    configs.Config.Logger.MaxSize,
+        MaxAge:     configs.Config.Logger.MaxAge,
+        MaxBackups: configs.Config.Logger.MaxBackups,
+        Compress:   configs.Config.Logger.Compress,
     }
 
     var writes = []zapcore.WriteSyncer{zapcore.AddSync(&hook)}
@@ -49,6 +52,4 @@ func New() (err error) {
             zap.Development(),
         ),
     )
-
-    return
 }

@@ -4,11 +4,11 @@ import (
     "github.com/dgrijalva/jwt-go"
     "github.com/gin-gonic/gin"
     "github.com/spf13/cast"
-    "skeleton/internal/errno"
+    "skeleton/internal/api/errno"
     "skeleton/pkg/jwtx"
 )
 
-func Authorization(conn string) gin.HandlerFunc {
+func Authorization(opt jwtx.Option, handler func(c *gin.Context, uuid string)) gin.HandlerFunc {
     return func(c *gin.Context) {
         var (
             uuid          string
@@ -22,7 +22,7 @@ func Authorization(conn string) gin.HandlerFunc {
             panic(errno.InvalidAuthorization)
         }
 
-        j := jwtx.New(conn)
+        j := jwtx.New(opt)
 
         if valid, data, err = j.Parse(authorization); err != nil || valid {
             switch err.(*jwt.ValidationError).Errors {
@@ -45,6 +45,8 @@ func Authorization(conn string) gin.HandlerFunc {
         }
 
         c.Set("uuid", uuid)
+
+        handler(c, uuid)
 
         c.Next()
     }

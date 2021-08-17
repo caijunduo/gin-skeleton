@@ -4,8 +4,8 @@ import (
     "fmt"
     "github.com/gin-gonic/gin"
     "github.com/go-resty/resty/v2"
-    "github.com/spf13/viper"
     "log"
+    "skeleton/configs"
     "time"
 )
 
@@ -71,7 +71,7 @@ func (w *weChatWork) Send() {
             "markdown": map[string]interface{}{
                 "content": w.result(),
             },
-        }).Post(viper.GetString("webhook.wechat_work.url"))
+        }).Post(configs.Config.Webhook.WechatWork.Url)
     if err != nil {
         log.Println("[WebHook] 异常推送失败 ", err)
         return

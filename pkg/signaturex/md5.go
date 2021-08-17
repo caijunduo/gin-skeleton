@@ -4,22 +4,17 @@ import (
     "errors"
     "fmt"
     "github.com/spf13/cast"
-    "github.com/spf13/viper"
     "github.com/uniplaces/carbon"
     "skeleton/pkg/helper"
     "sort"
 )
 
 type md5 struct {
-    conn            string
+    opt             Option
     data            map[string]interface{}
     beforeEncrypt   string
     beforeSignature string
     signature       string
-}
-
-func (m md5) getKey(key string) string {
-    return "signature." + m.conn + "." + key
 }
 
 func (m *md5) SetData(data map[string]interface{}) *md5 {
@@ -55,11 +50,11 @@ func (m *md5) Verify() error {
         return errors.New("signature field is missing")
     }
 
-    if ak != viper.GetString(m.getKey("appKey")) {
+    if ak != m.opt.AppKey {
         return errors.New("signature app key error")
     }
 
-    expires := viper.GetInt(m.getKey("expires"))
+    expires := m.opt.Expires
 
     if expires > 0 {
         now := carbon.Now()
@@ -79,7 +74,7 @@ func (m *md5) Verify() error {
 }
 
 func (m *md5) Generate() *md5 {
-    appSecret := viper.GetString(m.getKey("appSecret"))
+    appSecret := m.opt.AppSecret
     m.encrypt()
     m.beforeSignature = appSecret + m.beforeEncrypt + appSecret
     m.signature = helper.Crypto.MD5(m.beforeSignature)
@@ -98,8 +93,6 @@ func (m md5) GetSignature() string {
     return m.signature
 }
 
-func NewMd5(conn string) *md5 {
-    return &md5{
-        conn: conn,
-    }
+func NewMd5(opt Option) *md5 {
+    return &md5{opt: opt}
 }

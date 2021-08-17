@@ -2,20 +2,19 @@ package middleware
 
 import (
     "github.com/gin-gonic/gin"
-    "github.com/spf13/viper"
     "go.uber.org/zap"
-    "skeleton/internal/errno"
+    "skeleton/internal/api/errno"
     "skeleton/pkg/ginx"
     "skeleton/pkg/signaturex"
 )
 
-func Signature(conn string) gin.HandlerFunc {
+func Signature(method string, opt signaturex.Option) gin.HandlerFunc {
     return func(c *gin.Context) {
         all := ginx.Ctx.All()
 
-        switch viper.GetString("signature." + conn + ".method") {
-        case "md5":
-            m := signaturex.NewMd5(conn).SetData(all)
+        switch method {
+        case signaturex.Md5:
+            m := signaturex.NewMd5(opt).SetData(all)
             if err := m.Verify(); err != nil {
                 if gin.IsDebugging() {
                     zap.L().Debug("[Signature]",
@@ -27,8 +26,8 @@ func Signature(conn string) gin.HandlerFunc {
                 }
                 panic(errno.InvalidSignature)
             }
-        case "rsa":
-            r := signaturex.NewRSA(conn).SetData(all)
+        case signaturex.RSA:
+            r := signaturex.NewRSA(opt).SetData(all)
             if err := r.Verify(); err != nil {
                 if gin.IsDebugging() {
                     zap.L().Debug("[Signature]",

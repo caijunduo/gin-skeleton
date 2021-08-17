@@ -11,22 +11,17 @@ import (
     "errors"
     "fmt"
     "github.com/spf13/cast"
-    "github.com/spf13/viper"
     "github.com/uniplaces/carbon"
     "io/ioutil"
     "sort"
 )
 
 type rsa struct {
-    conn            string
+    opt             Option
     data            map[string]interface{}
     beforeEncrypt   string
     beforeSignature string
     signature       string
-}
-
-func (r rsa) getKey(key string) string {
-    return "signature." + r.conn + "." + key
 }
 
 func (r *rsa) SetData(data map[string]interface{}) *rsa {
@@ -55,7 +50,7 @@ func (r *rsa) encrypt() *rsa {
 }
 
 func (r rsa) encryptSHA1WithRSA() (signature string, err error) {
-    key, err := ioutil.ReadFile(viper.GetString(r.getKey("privateKeyPath")))
+    key, err := ioutil.ReadFile(r.opt.PrivateKeyPath)
     if err != nil {
         return
     }
@@ -86,7 +81,7 @@ func (r rsa) decryptSHA1WithRSA(sn string) (err error) {
     if err != nil {
         return
     }
-    key, err := ioutil.ReadFile(viper.GetString(r.getKey("publicKeyPath")))
+    key, err := ioutil.ReadFile(r.opt.PublicKeyPath)
     if err != nil {
         return
     }
@@ -109,7 +104,7 @@ func (r rsa) decryptSHA1WithRSA(sn string) (err error) {
 }
 
 func (r *rsa) Generate() error {
-    appSecret := viper.GetString(r.getKey("appSecret"))
+    appSecret := r.opt.AppSecret
     r.encrypt()
     r.beforeSignature = appSecret + r.beforeEncrypt + appSecret
     s, err := r.encryptSHA1WithRSA()
@@ -128,11 +123,11 @@ func (r *rsa) Verify() error {
         return errors.New("signature field is missing")
     }
 
-    if ak != viper.GetString(r.getKey("appKey")) {
+    if ak != r.opt.AppKey {
         return errors.New("signature app key error")
     }
 
-    expires := viper.GetInt(r.getKey("expires"))
+    expires := r.opt.Expires
     if expires > 0 {
         now := carbon.Now()
         now.SetTimestamp(ts)
@@ -141,7 +136,7 @@ func (r *rsa) Verify() error {
         }
     }
 
-    appSecret := viper.GetString(r.getKey("appSecret"))
+    appSecret := r.opt.AppSecret
     r.encrypt()
     r.beforeSignature = appSecret + r.beforeEncrypt + appSecret
     if err := r.decryptSHA1WithRSA(sn); err != nil {
@@ -163,8 +158,6 @@ func (r rsa) GetSignature() string {
     return r.signature
 }
 
-func NewRSA(conn string) *rsa {
-    return &rsa{
-        conn: conn,
-    }
+func NewRSA(opt Option) *rsa {
+    return &rsa{opt: opt}
 }

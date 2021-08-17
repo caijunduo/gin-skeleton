@@ -4,36 +4,44 @@ import (
     "fmt"
     _ "github.com/go-sql-driver/mysql"
     "github.com/gohouse/gorose/v2"
-    "github.com/spf13/cast"
-    "github.com/spf13/viper"
 )
 
 var (
     engines = make(map[string]*gorose.Engin, 0)
 )
 
-func New() error {
+type Option struct {
+    Connection           string
+    Host                 string
+    Port                 int
+    Username             string
+    Password             string
+    Database             string
+    Prefix               string
+    More                 string
+    SetMaxIdleConnection int
+    SetMaxOpenConnection int
+}
+
+func New(opts ...Option) error {
     var (
-        maps map[string]interface{}
-        err  error
+        err error
     )
 
-    r := viper.GetStringMap("database")
-    for connection, v := range r {
-        maps = cast.ToStringMap(v)
-        engines[connection], err = gorose.Open(&gorose.Config{
-            Driver: cast.ToString(maps["driver"]),
-            Dsn: fmt.Sprintf("%s:%s@tcp(%s:%s)/%s%s",
-                cast.ToString(maps["username"]),
-                cast.ToString(maps["password"]),
-                cast.ToString(maps["host"]),
-                cast.ToString(maps["port"]),
-                cast.ToString(maps["database"]),
-                cast.ToString(maps["more"]),
+    for _, opt := range opts {
+        engines[opt.Connection], err = gorose.Open(&gorose.Config{
+            Driver: "mysql",
+            Dsn: fmt.Sprintf("%s:%s@tcp(%s:%d)/%s%s",
+                opt.Username,
+                opt.Password,
+                opt.Host,
+                opt.Port,
+                opt.Database,
+                opt.More,
             ),
-            SetMaxOpenConns: cast.ToInt(maps["setMaxOpenConns"]),
-            SetMaxIdleConns: cast.ToInt(maps["setMaxIdleConns"]),
-            Prefix:          cast.ToString(maps["prefix"]),
+            SetMaxOpenConns: opt.SetMaxOpenConnection,
+            SetMaxIdleConns: opt.SetMaxIdleConnection,
+            Prefix:          opt.Prefix,
         })
         if err != nil {
             return err

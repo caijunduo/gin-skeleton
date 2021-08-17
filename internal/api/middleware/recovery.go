@@ -5,7 +5,7 @@ import (
     "github.com/go-playground/validator/v10"
     "net/http"
     "runtime/debug"
-    "skeleton/internal/errno"
+    "skeleton/internal/api/errno"
     "skeleton/pkg/exception"
     "skeleton/pkg/validatorx"
     "strings"
