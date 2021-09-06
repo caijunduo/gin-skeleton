@@ -5,7 +5,7 @@ import (
     "github.com/gin-gonic/gin"
     "github.com/go-resty/resty/v2"
     "log"
-    "skeleton/configs"
+	"skeleton/config"
     "time"
 )
 
@@ -71,7 +71,7 @@ func (w *weChatWork) Send() {
             "markdown": map[string]interface{}{
                 "content": w.result(),
             },
-        }).Post(configs.Config.Webhook.WechatWork.Url)
+        }).Post(config.Config.Webhook.WechatWork.Url)
     if err != nil {
         log.Println("[WebHook] 异常推送失败 ", err)
         return
