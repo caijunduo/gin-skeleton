@@ -1,11 +1,11 @@
 package middleware
 
 import (
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
-    "skeleton/internal/api/errno"
-    "skeleton/pkg/ginx"
-    "skeleton/pkg/signaturex"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+	"skeleton/internal/errno"
+	"skeleton/pkg/ginx"
+	"skeleton/pkg/signaturex"
 )
 
 func Signature(method string, opt signaturex.Option) gin.HandlerFunc {

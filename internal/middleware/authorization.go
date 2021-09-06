@@ -4,7 +4,7 @@ import (
     "github.com/dgrijalva/jwt-go"
     "github.com/gin-gonic/gin"
     "github.com/spf13/cast"
-    "skeleton/internal/api/errno"
+    "skeleton/internal/errno"
     "skeleton/pkg/jwtx"
 )
 
