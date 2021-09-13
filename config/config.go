@@ -1,6 +1,8 @@
 package config
 
-import configPkg "skeleton/pkg/config"
+import (
+	"github.com/caarlos0/env/v6"
+)
 
 type option interface{}
 
@@ -12,7 +14,7 @@ func Include(opts ...option) {
 
 func Init() {
 	for _, opt := range options {
-		if err := configPkg.Parse(opt); err != nil {
+		if err := env.Parse(opt); err != nil {
 			panic(err)
 		}
 	}

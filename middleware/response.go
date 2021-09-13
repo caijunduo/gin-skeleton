@@ -1,12 +1,12 @@
 package middleware
 
 import (
-    "github.com/gin-gonic/gin"
-	ginPkg "skeleton/pkg/gin"
+	"github.com/gin-gonic/gin"
+	"skeleton/pkg"
 )
 
 func Response(c *gin.Context) {
-	ginPkg.NewResponseWriter(c.Writer)
-    c.Writer = ginPkg.Writer
-    c.Next()
+	pkg.Writer.ResponseWriter = c.Writer
+	c.Writer = pkg.Writer
+	c.Next()
 }

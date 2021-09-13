@@ -1,9 +1,4 @@
-package signaturex
-
-const (
-    Md5 = "md5"
-    RSA = "rsa"
-)
+package signature
 
 type Option struct {
     AppKey         string

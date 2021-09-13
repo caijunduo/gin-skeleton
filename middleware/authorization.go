@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
 	"skeleton/errno"
+	"skeleton/pkg"
 	jwtPkg "skeleton/pkg/jwt"
 )
 
@@ -19,10 +20,11 @@ func Authorization(opt jwtPkg.Option, handler func(c *gin.Context, uuid string))
 		)
 
 		if authorization = c.GetHeader("Authorization"); authorization == "" {
-			panic(errno.InvalidAuthorization)
+			c.AbortWithStatusJSON(errno.InvalidAuthorization.ToSlice())
+			return
 		}
 
-		j := jwtPkg.New(opt)
+		j := pkg.Jwt(opt)
 
 		if valid, data, err = j.Parse(authorization); err != nil || valid {
 			switch err.(*jwt.ValidationError).Errors {
@@ -30,18 +32,21 @@ func Authorization(opt jwtPkg.Option, handler func(c *gin.Context, uuid string))
 				if authorization, err = j.SetData(map[string]interface{}{
 					"uuid": cast.ToString(data["uuid"]),
 				}).Generate(); err != nil {
-					panic(errno.UnAuthorization)
+					c.AbortWithStatusJSON(errno.UnAuthorization.ToSlice())
+					return
 				}
 				c.Header("Authorization", authorization)
 			default:
-				panic(errno.InvalidAuthorization)
+				c.AbortWithStatusJSON(errno.InvalidAuthorization.ToSlice())
+				return
 			}
 		} else {
 			uuid = cast.ToString(data["uuid"])
 		}
 
 		if uuid == "" {
-			panic(errno.InvalidAuthorization)
+			c.AbortWithStatusJSON(errno.InvalidAuthorization.ToSlice())
+			return
 		}
 
 		c.Set("uuid", uuid)

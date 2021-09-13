@@ -20,7 +20,7 @@ func Init() *gin.Engine {
 		middleware.Recovery,
 		middleware.Response,
 		middleware.RequestId,
-		middleware.Validator,
+		middleware.Error,
 	)
 	if !gin.IsDebugging() {
 		r.Use(middleware.Logger)

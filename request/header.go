@@ -1,13 +1,17 @@
 package request
 
 type Header struct {
-    VersionCode int64  `header:"version_code"` // 应用版本
-    VersionName string `header:"version_name"` // 应用版本名称
-    MacCode     string `header:"mac_code"`     // Mac地址
-    OsVersion   string `header:"os_version"`   // 系统版本
-    OsName      string `header:"os_name"`      // 系统名称
-    Resolution  string `header:"resolution"`   // 分辨率
-    PlatformID  int64  `header:"platform_id"`  // 平台ID
-    ChannelID   int64  `header:"channel_id"`   // 渠道ID
-    ChannelName string `header:"channel_name"` // 渠道名称
+	Authorization    string `header:"Authorization"`       // 身份凭证
+	VersionCode      int64  `header:"X-Version-Code"`      // 应用版本
+	VersionName      string `header:"X-Version-Name"`      // 应用版本名称
+	ApiVersion       string `header:"X-API-Version"`       // API版本
+	MacCode          string `header:"X-Mac-Code"`          // Mac地址
+	OsVersion        string `header:"X-OS-Version"`        // 系统版本
+	OsName           string `header:"X-OS-Name"`           // 系统名称
+	ResolutionWidth  string `header:"X-Resolution-Width"`  // 分辨率-宽
+	ResolutionHeight int64  `header:"X-Resolution-Height"` // 分辨率-高
+	PlatformID       int64  `header:"X-Platform-ID"`       // 平台ID
+	PlatformName     string `header:"X-Platform-Name"`     // 平台名称
+	ChannelID        int64  `header:"X-Channel-ID"`        // 渠道ID
+	ChannelName      string `header:"X-Channel-Name"`      // 渠道名称
 }

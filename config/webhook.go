@@ -7,7 +7,7 @@ func init() {
 }
 
 type webhook struct {
-	weCom struct {
+	WeCom struct {
 		Url string `env:"WEBHOOK_WECOM_URL"`
 	}
 }

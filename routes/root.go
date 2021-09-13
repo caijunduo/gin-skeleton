@@ -10,5 +10,5 @@ func init() {
 }
 
 func Root(r *gin.Engine) {
-	r.Any("/", internal.Example)
+	internal.Example.RouteGroup(r.Group("example"))
 }

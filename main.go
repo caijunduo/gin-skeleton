@@ -6,11 +6,10 @@ import (
 	"github.com/spf13/cast"
 	"net/http"
 	"skeleton/config"
+	"skeleton/pkg"
+	_ "skeleton/pkg"
 	"skeleton/pkg/db"
-	"skeleton/pkg/errgroup"
-	"skeleton/pkg/helper"
 	"skeleton/pkg/logger"
-	redisPkg "skeleton/pkg/redis"
 	"skeleton/pkg/validator"
 	"skeleton/routes"
 	"time"
@@ -18,11 +17,10 @@ import (
 )
 
 func main() {
-	helper.New()
 	config.Init()
 	logger.New()
 	if config.DB.Mode {
-		if err := db.NewMySQL(&db.Default, mysql.ConnectionURL{
+		if err := db.NewMySQL(&pkg.MySQLDefault, mysql.ConnectionURL{
 			User:     config.DB.Default.User,
 			Password: config.DB.Default.Password,
 			Database: config.DB.Default.Database,
@@ -37,7 +35,7 @@ func main() {
 		}
 	}
 	if config.Redis.Mode {
-		if err := redisPkg.New(redisPkg.Default, &redis.Options{
+		if err := db.NewRedis(pkg.RedisDefault, &redis.Options{
 			Addr:       config.Redis.Default.Host + ":" + cast.ToString(config.Redis.Default.Port),
 			Password:   config.Redis.Default.Auth,
 			DB:         config.Redis.Default.Db,
@@ -55,10 +53,10 @@ func main() {
 		ReadTimeout:  time.Duration(config.App.ReadTimeout) * time.Second,
 		WriteTimeout: time.Duration(config.App.WriteTimeout) * time.Second,
 	}
-	errgroup.Group.Go(func() error {
+	pkg.Group.Go(func() error {
 		return s.ListenAndServe()
 	})
-	if err := errgroup.Group.Wait(); err != nil {
+	if err := pkg.Group.Wait(); err != nil {
 		panic(err)
 	}
 }

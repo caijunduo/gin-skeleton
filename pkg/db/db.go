@@ -1,13 +1,10 @@
 package db
 
 import (
+	"github.com/go-redis/redis"
 	"upper.io/db.v3/lib/sqlbuilder"
 	"upper.io/db.v3/mysql"
 	"upper.io/db.v3/sqlite"
-)
-
-var (
-	Default sqlbuilder.Database
 )
 
 func NewMySQL(builder *sqlbuilder.Database, settings mysql.ConnectionURL) error {
@@ -25,5 +22,14 @@ func NewSQLite(builder *sqlbuilder.Database, settings sqlite.ConnectionURL) erro
 		return err
 	}
 	*builder = database
+	return nil
+}
+
+func NewRedis(builder *redis.Client, opt *redis.Options) error {
+	engine := redis.NewClient(opt)
+	if _, err := engine.Ping().Result(); err != nil {
+		return err
+	}
+	builder = engine
 	return nil
 }

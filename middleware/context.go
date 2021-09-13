@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	ginPkg "skeleton/pkg/gin"
+	"skeleton/pkg"
 )
 
 func Context(c *gin.Context) {
-	ginPkg.New(c)
+	pkg.Context.Gin = c
 	c.Next()
 }
