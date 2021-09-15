@@ -15,7 +15,7 @@ func New() {
 	zap.ReplaceGlobals(
 		zap.New(
 			zapcore.NewCore(
-				zapcore.NewJSONEncoder(ec),
+				zapcore.NewConsoleEncoder(ec),
 				zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout)),
 				zap.NewAtomicLevelAt(zap.DebugLevel),
 			),

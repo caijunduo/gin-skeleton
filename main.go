@@ -1,17 +1,17 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/spf13/cast"
 	"net/http"
 	"skeleton/config"
+	"skeleton/internal"
 	"skeleton/pkg"
 	_ "skeleton/pkg"
 	"skeleton/pkg/db"
 	"skeleton/pkg/logger"
-	"skeleton/pkg/validator"
-	"skeleton/routes"
 	"time"
 	"upper.io/db.v3/mysql"
 )
@@ -44,12 +44,15 @@ func main() {
 			panic(err)
 		}
 	}
-	if err := validator.New(); err != nil {
-		panic(err)
-	}
 	s := &http.Server{
-		Addr:         config.App.Host + ":" + cast.ToString(config.App.Port),
-		Handler:      routes.Init(),
+		Addr: config.App.Host + ":" + cast.ToString(config.App.Port),
+		Handler: func() *gin.Engine {
+			r := gin.New()
+			root := internal.Root{}
+			root.RouteEngine(r)
+			root.RouteGroup(r.Group(""))
+			return r
+		}(),
 		ReadTimeout:  time.Duration(config.App.ReadTimeout) * time.Second,
 		WriteTimeout: time.Duration(config.App.WriteTimeout) * time.Second,
 	}

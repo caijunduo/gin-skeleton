@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cast"
 	"github.com/uniplaces/carbon"
-	"skeleton/pkg/crypto"
+	"skeleton/pkg/helper"
 	"sort"
 )
 
@@ -15,6 +15,7 @@ type MD5 struct {
 	beforeEncrypt   string
 	beforeSignature string
 	signature       string
+	cryptoHelper    helper.Crypto
 }
 
 func (m *MD5) SetData(data map[string]interface{}) *MD5 {
@@ -77,7 +78,7 @@ func (m *MD5) Generate() *MD5 {
 	appSecret := m.Opt.AppSecret
 	m.encrypt()
 	m.beforeSignature = appSecret + m.beforeEncrypt + appSecret
-	m.signature = crypto.Crypto.MD5(m.beforeSignature)
+	m.signature = m.cryptoHelper.MD5(m.beforeSignature)
 	return m
 }
 

@@ -2,29 +2,17 @@ package internal
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
+	"skeleton/pkg/webhook"
+	"skeleton/response"
 )
 
-var Example = new(example)
+type Example struct{}
 
-type example struct{}
-
-func (e example) RouteGroup(r *gin.RouterGroup) {
-	r.GET("", e.gateway)
+func (e Example) RouteGroup(r *gin.RouterGroup) {
+	r.GET("", e.example)
 }
 
-func (e example) beforeGateway() {
-	log.Println("before")
-}
-
-func (e example) afterGateway() {
-	log.Println("after")
-}
-
-func (e example) gateway(c *gin.Context) {
-	e.beforeGateway()
-	defer e.afterGateway()
-	log.Println("main")
-	c.String(http.StatusOK, "Example")
+func (e Example) example(c *gin.Context) {
+	webhook.WeCom.Send()
+	c.JSON(response.Example.Slice())
 }

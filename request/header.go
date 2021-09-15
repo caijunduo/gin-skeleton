@@ -1,6 +1,6 @@
 package request
 
-type Header struct {
+type header struct {
 	Authorization    string `header:"Authorization"`       // 身份凭证
 	VersionCode      int64  `header:"X-Version-Code"`      // 应用版本
 	VersionName      string `header:"X-Version-Name"`      // 应用版本名称
@@ -15,3 +15,5 @@ type Header struct {
 	ChannelID        int64  `header:"X-Channel-ID"`        // 渠道ID
 	ChannelName      string `header:"X-Channel-Name"`      // 渠道名称
 }
+
+var Header = header{}
