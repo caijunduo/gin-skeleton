@@ -2,7 +2,6 @@ package internal
 
 import (
 	"github.com/gin-gonic/gin"
-	"skeleton/pkg/webhook"
 	"skeleton/response"
 )
 
@@ -13,6 +12,5 @@ func (e Example) RouteGroup(r *gin.RouterGroup) {
 }
 
 func (e Example) example(c *gin.Context) {
-	webhook.WeCom.Send()
 	c.JSON(response.Example.Slice())
 }

@@ -22,6 +22,7 @@ const (
 	postAllKey = "__postAll__"
 	jsonAllKey = "__jsonAll__"
 	allKey     = "__all__"
+	headersKey = "__headers__"
 )
 
 func GetAll(c *gin.Context) (data map[string]interface{}) {
@@ -107,5 +108,17 @@ func All(c *gin.Context) (data map[string]interface{}) {
 		data[k] = v
 	}
 	c.Set(allKey, data)
+	return
+}
+
+func Headers(c *gin.Context) (data map[string]string) {
+	if ctxData := c.GetStringMapString(headersKey); ctxData != nil {
+		return ctxData
+	}
+	data = make(map[string]string, 0)
+	for k := range c.Request.Header {
+		data[k] = c.Request.Header.Get(k)
+	}
+	c.Set(headersKey, data)
 	return
 }

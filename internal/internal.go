@@ -41,6 +41,7 @@ func (Root) noRoute(c *gin.Context) {
 func (Root) request(c *gin.Context) {
 	_ = c.ShouldBindHeader(&request.Header)
 	request.All(c)
+	request.Headers(c)
 	c.Next()
 }
 
@@ -52,21 +53,16 @@ func (Root) response(c *gin.Context) {
 
 func (Root) logger(c *gin.Context) {
 	start := time.Now()
-	path := c.Request.URL.Path
-	body := request.All(c)
-	headers := c.Request.Header
 	c.Next()
-	latency := time.Since(start)
-	zap.L().Info("Request",
+	zap.L().Info("REQUEST",
 		zap.Int("status", c.Writer.Status()),
 		zap.String("method", c.Request.Method),
-		zap.String("path", path),
-		zap.Any("body", body),
-		zap.Any("headers", headers),
+		zap.String("path", c.Request.URL.Path),
+		zap.Any("body", request.All(c)),
+		zap.Any("headers", request.Headers(c)),
 		zap.String("ip", c.ClientIP()),
-		zap.String("user-agent", c.Request.UserAgent()),
 		zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
-		zap.Duration("latency", latency),
+		zap.Duration("latency", time.Since(start)),
 	)
 }
 

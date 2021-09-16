@@ -8,8 +8,8 @@ import (
 
 func New() {
 	ec := zap.NewProductionEncoderConfig()
-	ec.EncodeTime = zapcore.ISO8601TimeEncoder
-	ec.EncodeLevel = zapcore.CapitalLevelEncoder
+	ec.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05")
+	ec.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	ec.EncodeName = zapcore.FullNameEncoder
 
 	zap.ReplaceGlobals(
