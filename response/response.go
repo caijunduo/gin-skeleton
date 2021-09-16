@@ -1,60 +1,90 @@
 package response
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/cast"
+)
 
-type Response struct {
+type response struct {
 	status  int
 	code    int
 	message string
 	data    interface{}
 	err     error
+
+	temp map[string]interface{}
 }
 
-func (r *Response) GetStatus() int {
+func (r *response) GetStatus() int {
 	return r.status
 }
 
-func (r *Response) GetCode() int {
+func (r *response) GetCode() int {
 	return r.code
 }
 
-func (r *Response) GetMessage() string {
-	return r.message
+func (r *response) GetMessage() string {
+	return cast.ToString(r.getTemp("message", r.message))
 }
 
-func (r *Response) GetData() interface{} {
-	return r.data
+func (r *response) GetData() interface{} {
+	return r.getTemp("data", r.data)
 }
 
-func (r *Response) GetError() error {
-	return r.err
+func (r *response) GetError() error {
+	if err, ok := r.getTemp("err", r.err).(error); ok && err != nil {
+		return err
+	}
+	return nil
 }
 
-func (r *Response) SetMessage(message string) *Response {
-	r.message = message
+func (r *response) SetMessage(message string) *response {
+	r.setTemp("message", message)
 	return r
 }
 
-func (r *Response) SetData(data interface{}) *Response {
-	r.data = data
+func (r *response) SetData(data interface{}) *response {
+	r.setTemp("data", data)
 	return r
 }
 
-func (r *Response) SetError(err error) *Response {
-	r.err = err
+func (r *response) SetError(err error) *response {
+	r.setTemp("err", err)
 	return r
 }
 
-func (r *Response) Slice() (int, interface{}) {
+func (r *response) setTemp(key string, value interface{}) {
+	if r.temp == nil {
+		r.resetTemp()
+	}
+	r.temp[key] = value
+}
+
+func (r *response) getTemp(key string, def interface{}) interface{} {
+	if val, ok := r.temp[key]; ok {
+		return val
+	} else {
+		return def
+	}
+}
+
+func (r *response) resetTemp() {
+	r.temp = make(map[string]interface{}, 0)
+}
+
+func (r *response) Slice() (int, interface{}) {
 	res := gin.H{
 		"code":    r.code,
-		"message": r.message,
+		"message": r.GetMessage(),
 	}
 	if r.data != nil {
-		res["data"] = r.data
+		res["data"] = r.GetData()
 	}
-	if gin.Mode() != gin.ReleaseMode && r.err != nil {
-		res["error"] = r.err.Error()
+	if gin.Mode() != gin.ReleaseMode {
+		if err := r.GetError(); err != nil {
+			res["error"] = err.Error()
+		}
 	}
+	r.resetTemp()
 	return r.status, res
 }

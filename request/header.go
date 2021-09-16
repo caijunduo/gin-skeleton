@@ -1,5 +1,6 @@
 package request
 
+//header 全局Header
 type header struct {
 	Authorization    string `header:"Authorization"`       // 身份凭证
 	VersionCode      int64  `header:"X-Version-Code"`      // 应用版本

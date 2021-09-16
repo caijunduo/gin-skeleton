@@ -12,7 +12,7 @@ func (r *Pagination) Default() {
 
 func (r Pagination) Validate() error {
 	return VerifyStruct(r, Rules{
-		"Page":    {Ge("1", "页数不能小于1")},
-		"PerPage": {Ge("1", "每页数量不能小于1"), Le("50", "每页数量不能大于50")},
+		"Page":    {PageGe1},
+		"PerPage": {PageGe1, PerPageGe50},
 	})
 }

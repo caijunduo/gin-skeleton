@@ -9,6 +9,7 @@ import (
 	"skeleton/pkg/authorization"
 	"skeleton/request"
 	"skeleton/response"
+	"skeleton/text"
 	"time"
 )
 
@@ -92,7 +93,7 @@ func (Root) authorization(opt authorization.JwtOption, handler func(c *gin.Conte
 					c.AbortWithStatusJSON(response.UnAuthorization.Slice())
 					return
 				}
-				c.Header("Authorization", token)
+				c.Header(text.HTTPAuthorization.ToValue(), token)
 			default:
 				c.AbortWithStatusJSON(response.InvalidAuthorization.Slice())
 				return
