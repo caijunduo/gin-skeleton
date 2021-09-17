@@ -5,13 +5,14 @@ type Pagination struct {
 	PerPage uint `json:"per_page" xml:"per_page" query:"per_page" form:"per_page" protobuf:"per_page" uri:"per_page" binding:"gte=1,lte=50"`
 }
 
-func (r *Pagination) Default() {
-	r.Page = 1
-	r.PerPage = 20
+func (p *Pagination) Default() *Pagination {
+	p.Page = 1
+	p.PerPage = 20
+	return p
 }
 
-func (r Pagination) Validate() error {
-	return VerifyStruct(r, Rules{
+func (p Pagination) Validate() error {
+	return VerifyStruct(p, Rules{
 		"Page":    {PageGe1},
 		"PerPage": {PageGe1, PerPageGe50},
 	})

@@ -77,8 +77,8 @@ func (r *response) Slice() (int, interface{}) {
 		"code":    r.code,
 		"message": r.GetMessage(),
 	}
-	if r.data != nil {
-		res["data"] = r.GetData()
+	if data := r.GetData(); data != nil {
+		res["data"] = data
 	}
 	if gin.Mode() != gin.ReleaseMode {
 		if err := r.GetError(); err != nil {
