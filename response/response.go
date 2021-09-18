@@ -82,7 +82,7 @@ func (r *response) Slice() (int, interface{}) {
 	}
 	if gin.Mode() != gin.ReleaseMode {
 		if err := r.GetError(); err != nil {
-			res["error"] = err.Error()
+			res["error"] = err
 		}
 	}
 	r.resetTemp()
