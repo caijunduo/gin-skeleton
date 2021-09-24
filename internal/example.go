@@ -2,14 +2,11 @@ package internal
 
 import (
 	"github.com/gin-gonic/gin"
-	"skeleton/cache"
 	"skeleton/request"
 	"skeleton/response"
 )
 
-type Example struct {
-	exampleCache cache.Example
-}
+type Example struct{}
 
 func (e Example) RouteGroup(r *gin.RouterGroup) {
 	r.GET("", e.example)

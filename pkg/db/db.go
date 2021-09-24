@@ -25,11 +25,11 @@ func NewSQLite(builder *sqlbuilder.Database, settings sqlite.ConnectionURL) erro
 	return nil
 }
 
-func NewRedis(builder *redis.Client, opt *redis.Options) error {
+func NewRedis(builder **redis.Client, opt *redis.Options) error {
 	engine := redis.NewClient(opt)
 	if _, err := engine.Ping().Result(); err != nil {
 		return err
 	}
-	builder = engine
+	*builder = engine
 	return nil
 }

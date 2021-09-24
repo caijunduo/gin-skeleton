@@ -35,7 +35,7 @@ func main() {
 		}
 	}
 	if config.Redis.Mode {
-		if err := db.NewRedis(pkg.RedisDefault, &redis.Options{
+		if err := db.NewRedis(&pkg.RedisDefault, &redis.Options{
 			Addr:       config.Redis.Default.Host + ":" + cast.ToString(config.Redis.Default.Port),
 			Password:   config.Redis.Default.Auth,
 			DB:         config.Redis.Default.Db,

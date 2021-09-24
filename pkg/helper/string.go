@@ -1,6 +1,8 @@
 package helper
 
-import "strings"
+import (
+	"strings"
+)
 
 type String struct{}
 

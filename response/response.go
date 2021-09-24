@@ -5,6 +5,18 @@ import (
 	"github.com/spf13/cast"
 )
 
+type Response interface {
+	GetStatus() int
+	GetCode() int
+	GetMessage() string
+	GetData() interface{}
+	GetError() error
+	SetMessage(message string) Response
+	SetData(data interface{}) Response
+	SetError(err error) Response
+	Slice() (int, interface{})
+}
+
 type response struct {
 	status  int
 	code    int
@@ -38,17 +50,17 @@ func (r *response) GetError() error {
 	return nil
 }
 
-func (r *response) SetMessage(message string) *response {
+func (r *response) SetMessage(message string) Response {
 	r.setTemp("message", message)
 	return r
 }
 
-func (r *response) SetData(data interface{}) *response {
+func (r *response) SetData(data interface{}) Response {
 	r.setTemp("data", data)
 	return r
 }
 
-func (r *response) SetError(err error) *response {
+func (r *response) SetError(err error) Response {
 	r.setTemp("err", err)
 	return r
 }

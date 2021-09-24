@@ -8,6 +8,7 @@ var (
 	OK                   = &response{status: http.StatusOK, code: 0, message: "OK"}
 	NotFound             = &response{status: http.StatusNotFound, code: 404, message: "Not Found"}
 	InvalidParameters    = &response{status: http.StatusInternalServerError, code: 10000, message: "Invalid Parameter"}
+	InternalServerError  = &response{status: http.StatusInternalServerError, code: 10001, message: "Internal Server Error"}
 	InvalidAuthorization = &response{status: http.StatusUnauthorized, code: 10002, message: "Invalid authorization"}
 	UnAuthorization      = &response{status: http.StatusInternalServerError, code: 10003, message: "Authorization generate failed"}
 )
