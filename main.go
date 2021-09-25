@@ -5,7 +5,6 @@ import (
 	"github.com/go-redis/redis"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/spf13/cast"
-	"log"
 	"net/http"
 	"skeleton/config"
 	"skeleton/internal"
@@ -13,17 +12,11 @@ import (
 	_ "skeleton/pkg"
 	"skeleton/pkg/db"
 	"skeleton/pkg/logger"
-	"skeleton/pkg/structure"
 	"time"
 	"upper.io/db.v3/mysql"
 )
 
 func main() {
-	var ss structure.StringSlice = []string{"1", "", "2"}
-	log.Println(ss.FilterNilAndCreate())
-	log.Println(ss)
-	log.Println(ss.FilterNil().Output())
-	log.Println(ss.Is("2"))
 	config.Init()
 	logger.New()
 	if config.DB.Mode {
