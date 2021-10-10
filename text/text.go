@@ -10,7 +10,7 @@ type text struct {
 	temp  map[string]interface{}
 }
 
-func (t *text) Fields(field []interface{}) *text {
+func (t *text) Fields(field ...interface{}) *text {
 	t.setTemp("field", append(t.field, field...))
 	return t
 }
