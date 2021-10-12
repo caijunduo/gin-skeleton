@@ -8,11 +8,11 @@ type option interface{}
 
 var options []option
 
-func Include(opts ...option) {
+func include(opts ...option) {
 	options = append(options, opts...)
 }
 
-func Init() {
+func Setup() {
 	for _, opt := range options {
 		if err := env.Parse(opt); err != nil {
 			panic(err)

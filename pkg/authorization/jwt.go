@@ -1,4 +1,4 @@
-package authorization
+package authorizationPkg
 
 import (
 	"github.com/dgrijalva/jwt-go"

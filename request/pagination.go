@@ -1,7 +1,7 @@
 package request
 
 import (
-	"skeleton/pkg/validation"
+	validation2 "skeleton/validation"
 )
 
 type Pagination struct {
@@ -10,11 +10,11 @@ type Pagination struct {
 }
 
 func (p Pagination) Validate() error {
-	return validation.Verify(
-		validation.Field(p.Page).
-			Rule(validation.Required.SetMessage("页数不能为空")),
-		validation.Field(p.PerPage).
-			Rule(validation.Required.SetMessage("每页数量不能为空")).
-			Rule(validation.Max(50).SetMessage("每页数量不能超过50")),
+	return validation2.Verify(
+		validation2.Field(p.Page).
+			Rule(validation2.Required.SetMessage("页数不能为空")),
+		validation2.Field(p.PerPage).
+			Rule(validation2.Required.SetMessage("每页数量不能为空")).
+			Rule(validation2.Max(50).SetMessage("每页数量不能超过50")),
 	)
 }

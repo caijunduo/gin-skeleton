@@ -1,13 +1,31 @@
 package pkg
 
 import (
-	"github.com/go-redis/redis"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
-	"upper.io/db.v3/lib/sqlbuilder"
+	"os"
 )
 
 var (
-	Group        errgroup.Group
-	RedisDefault *redis.Client
-	MySQLDefault sqlbuilder.Database
+	Group errgroup.Group
 )
+
+func Logger() {
+	ec := zap.NewProductionEncoderConfig()
+	ec.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05")
+	ec.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	ec.EncodeName = zapcore.FullNameEncoder
+
+	zap.ReplaceGlobals(
+		zap.New(
+			zapcore.NewCore(
+				zapcore.NewConsoleEncoder(ec),
+				zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout)),
+				zap.NewAtomicLevelAt(zap.DebugLevel),
+			),
+			zap.AddCaller(),
+			zap.Development(),
+		),
+	)
+}

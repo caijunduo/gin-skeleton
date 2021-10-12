@@ -1,13 +1,9 @@
 package config
 
-var WebHook = webhook{}
-
 func init() {
-	Include(&WebHook)
+	include(&WebHook)
 }
 
-type webhook struct {
-	WeCom struct {
-		Url string `env:"WEBHOOK_WECOM_URL"`
-	}
+var WebHook struct {
+	WeComUrl string `env:"WEBHOOK_WECOMURL"`
 }

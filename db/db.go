@@ -2,10 +2,22 @@ package db
 
 import (
 	"github.com/go-redis/redis"
+	"skeleton/config"
 	"upper.io/db.v3/lib/sqlbuilder"
 	"upper.io/db.v3/mysql"
 	"upper.io/db.v3/sqlite"
 )
+
+func Setup() {
+	if config.DB.Mode {
+		if err := NewMySQL(&MySQL.Builder, MySQL.ConnectionURL()); err != nil {
+			panic(err)
+		}
+		if err := NewRedis(&Redis.Builder, Redis.ConnectionURL()); err != nil {
+			panic(err)
+		}
+	}
+}
 
 func NewMySQL(builder *sqlbuilder.Database, settings mysql.ConnectionURL) error {
 	database, err := mysql.Open(settings)

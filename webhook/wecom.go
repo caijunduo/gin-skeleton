@@ -70,7 +70,7 @@ func (w *weCom) Send() {
 			"markdown": map[string]interface{}{
 				"content": w.result(),
 			},
-		}).Post(config.WebHook.WeCom.Url)
+		}).Post(config.WebHook.WeComUrl)
 	w.reset()
 	if err != nil {
 		log.Println("[WebHook] 异常推送失败 ", err)
