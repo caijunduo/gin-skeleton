@@ -1,23 +1,22 @@
 package basicMiddleware
 
 import (
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
-	"skeleton/request"
-	"time"
+    "github.com/gin-gonic/gin"
+    operateHelper "skeleton/helper/operate"
+    "skeleton/logger"
+    "skeleton/request"
+    "time"
 )
 
 func Logger(c *gin.Context) {
-	start := time.Now()
-	c.Next()
-	zap.L().Info("REQUEST",
-		zap.Int("status", c.Writer.Status()),
-		zap.String("method", c.Request.Method),
-		zap.String("path", c.Request.URL.Path),
-		zap.Any("body", request.All(c)),
-		zap.Any("headers", request.Headers(c)),
-		zap.String("ip", c.ClientIP()),
-		zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
-		zap.Duration("latency", time.Since(start)),
-	)
+    start := time.Now()
+    c.Next()
+    logger.HTTP.WithField("status", c.Writer.Status()).
+        WithField("method", c.Request.Method).
+        WithField("path", c.Request.URL.Path).
+        WithField("body", operateHelper.JSONEncodeToString(request.All(c))).
+        WithField("headers", operateHelper.JSONEncodeToString(request.Headers(c))).
+        WithField("ip", c.ClientIP()).
+        WithField("latency", time.Since(start)).
+        Info()
 }

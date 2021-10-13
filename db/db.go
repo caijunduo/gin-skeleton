@@ -8,7 +8,7 @@ import (
 	"upper.io/db.v3/sqlite"
 )
 
-func Setup() {
+func init() {
 	if config.DB.Mode {
 		if err := NewMySQL(&MySQL.Builder, MySQL.ConnectionURL()); err != nil {
 			panic(err)
