@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"skeleton/config"
 	"skeleton/db"
+	_ "skeleton/listener"
 	"skeleton/logger"
 	"skeleton/router"
 	"time"
