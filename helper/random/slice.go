@@ -1,13 +1,11 @@
-package helper
+package randomHelper
 
 import (
 	"math/rand"
 	"time"
 )
 
-type Random struct{}
-
-func (Random) Numbers(start, end, count int) (nums []int) {
+func Numbers(start, end, count int) (nums []int) {
 	nums = make([]int, 0)
 	if end < start || (end-start) < count {
 		return
@@ -30,14 +28,4 @@ func (Random) Numbers(start, end, count int) (nums []int) {
 		}
 	}
 	return
-}
-
-func (Random) Strings(n int) string {
-	var letterRunes = []rune("1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-	rand.Seed(time.Now().UnixNano())
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letterRunes[rand.Intn(len(letterRunes))]
-	}
-	return string(b)
 }

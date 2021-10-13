@@ -1,17 +1,12 @@
-package pkg
+package logger
 
 import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"golang.org/x/sync/errgroup"
 	"os"
 )
 
-var (
-	Group errgroup.Group
-)
-
-func Logger() {
+func Setup() {
 	ec := zap.NewProductionEncoderConfig()
 	ec.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05")
 	ec.EncodeLevel = zapcore.CapitalColorLevelEncoder

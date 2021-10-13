@@ -10,5 +10,5 @@ func GetInfo(c *gin.Context) {
 }
 
 func GetMessageInfo(c *gin.Context) {
-	c.IndentedJSON(response.OK.SetData("Hello, SKeleton Message.").Slice())
+	c.IndentedJSON(response.OK.SetData("Hello, Skeleton Message.").Slice())
 }

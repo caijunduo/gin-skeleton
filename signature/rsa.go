@@ -13,12 +13,13 @@ import (
 	"github.com/spf13/cast"
 	"github.com/uniplaces/carbon"
 	"io/ioutil"
+	"skeleton/encrypt"
 	"sort"
 )
 
 type RSA struct {
-	Opt             Option
-	data            map[string]interface{}
+	Opt  Option
+	data map[string]interface{}
 	beforeEncrypt   string
 	beforeSignature string
 	signature       string
@@ -63,12 +64,7 @@ func (r RSA) encryptSHA1WithRSA() (signature string, err error) {
 	if err != nil {
 		return
 	}
-	hash := sha256.New()
-	_, err = hash.Write([]byte(r.beforeEncrypt))
-	if err != nil {
-		return
-	}
-	sign, err := rsa2.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, hash.Sum(nil))
+	sign, err := rsa2.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, encrypt.Sha256ToByte(r.beforeEncrypt))
 	if err != nil {
 		return
 	}

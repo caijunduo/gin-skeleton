@@ -4,8 +4,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
+	"skeleton/authorization"
 	"skeleton/config"
-	authorizationPkg "skeleton/pkg/authorization"
 	"skeleton/request"
 	"skeleton/response"
 	"skeleton/text"
@@ -25,7 +25,7 @@ func Authorization(c *gin.Context) {
 		return
 	}
 
-	j := authorizationPkg.JwtClaims{Opt: authorizationPkg.JwtOption{
+	j := authorization.JwtClaims{Opt: authorization.JwtOption{
 		Key:           config.Authorization.Key,
 		Issuer:        config.Authorization.Issuer,
 		Subject:       config.Authorization.Subject,
