@@ -24,6 +24,7 @@ func NewMySQL(builder *sqlbuilder.Database, settings mysql.ConnectionURL) error 
 	if err != nil {
 		return err
 	}
+	database.LoggingEnabled()
 	*builder = database
 	return nil
 }

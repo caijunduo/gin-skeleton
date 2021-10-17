@@ -6,9 +6,6 @@ import (
     "golang.org/x/sync/errgroup"
     "net/http"
     "skeleton/config"
-    _ "skeleton/db"       // 自动加载数据库
-    _ "skeleton/listener" // 自动加载事件监听
-    _ "skeleton/logger"   // 自动加载日志库
     "skeleton/router"
     "time"
 )
@@ -16,7 +13,6 @@ import (
 var g errgroup.Group
 
 func main() {
-    config.Setup()
     s := &http.Server{
         Addr:         config.Server.Host + ":" + cast.ToString(config.Server.Port),
         Handler:      router.Setup(),

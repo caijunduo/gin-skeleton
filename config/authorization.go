@@ -5,8 +5,8 @@ func init() {
 }
 
 var Authorization struct {
-	Key           string `env:"Authorization_KEY" envDefault:""`
-	Issuer        string `env:"Authorization_ISSUER" envDefault:""`
-	Subject       string `env:"Authorization_SUBJECT" envDefault:""`
-	ExpireMinutes int    `env:"Authorization_EXPIREMINUTES" envDefault:"60"`
+	Key           string `env:"AUTHORIZATION_KEY" envDefault:""`
+	Issuer        string `env:"AUTHORIZATION_ISSUER" envDefault:""`
+	Subject       string `env:"AUTHORIZATION_SUBJECT" envDefault:""`
+	ExpireMinutes int    `env:"AUTHORIZATION_EXPIREMINUTES" envDefault:"60"`
 }

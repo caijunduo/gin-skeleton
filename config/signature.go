@@ -5,7 +5,7 @@ func init() {
 }
 
 var Signature struct {
-	AppKey    string `env:"APP_SIGNATURE_APPKEY" envDefault:""`
-	AppSecret string `env:"APP_SIGNATURE_APPSECRET" envDefault:""`
-	Expires   int    `env:"APP_SIGNATURE_EXPIRES" envDefault:"0"`
+	AppKey    string `env:"SIGNATURE_APPKEY" envDefault:""`
+	AppSecret string `env:"SIGNATURE_APPSECRET" envDefault:""`
+	Expires   int    `env:"SIGNATURE_EXPIRES" envDefault:"0"`
 }

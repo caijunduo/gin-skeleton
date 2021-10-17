@@ -9,7 +9,7 @@ import (
 
 func GetInfo(c *gin.Context) {
     _, _ = event.Trigger(listener.AccountExampleStart, event.M{})
-    c.IndentedJSON(response.OK.SetData("Hello，Skeleton.").Slice())
+    c.IndentedJSON(response.OK.Slice())
     _, _ = event.Trigger(listener.AccountExampleEnd, event.M{})
 }
 
