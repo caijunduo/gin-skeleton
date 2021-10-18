@@ -1,14 +1,19 @@
 package accountInternal
 
 import (
+	"github.com/bamzi/jobrunner"
 	"github.com/gookit/event"
 	"skeleton/context"
+	accountJob "skeleton/job/accounts"
 	"skeleton/listener"
+	"skeleton/logger"
 	"skeleton/response"
 )
 
 func GetInfo(c *context.Context) {
 	_, _ = event.Trigger(listener.AccountExampleStart, event.M{})
+	jobrunner.Now(accountJob.SendEmail{})
+	logger.HTTP.Info("Run after SendEmail Job")
 	c.IndentedJSON(response.OK.Slice())
 	_, _ = event.Trigger(listener.AccountExampleEnd, event.M{})
 }

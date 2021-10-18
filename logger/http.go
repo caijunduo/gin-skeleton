@@ -1,17 +1,19 @@
 package logger
 
 import (
-    "github.com/sirupsen/logrus"
+	formatter "github.com/antonfisher/nested-logrus-formatter"
+	"github.com/sirupsen/logrus"
 )
 
 var HTTP *logrus.Logger
 
 func init() {
-    HTTP = logrus.New()
-    HTTP.SetFormatter(&logrus.TextFormatter{
-        DisableColors:   true,
-        FullTimestamp:   true,
-        TimestampFormat: "2006-01-02 15:04:05",
-    })
-    HTTP.AddHook(&loggerHook{typeName: "http"})
+	HTTP = logrus.New()
+	HTTP.SetLevel(logrus.TraceLevel)
+	HTTP.SetFormatter(&formatter.Formatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+		HideKeys:        true,
+		FieldsOrder:     []string{"type"},
+	})
+	HTTP.AddHook(&loggerHook{typeName: "http"})
 }
