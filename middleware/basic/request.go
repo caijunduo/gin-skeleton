@@ -5,9 +5,11 @@ import (
 	"skeleton/request"
 )
 
-func Request(c *gin.Context) {
-	_ = c.ShouldBindHeader(&request.Header)
-	request.All(c)
-	request.Headers(c)
-	c.Next()
+func Request() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		_ = c.ShouldBindHeader(&request.Header)
+		request.All(c)
+		request.Headers(c)
+		c.Next()
+	}
 }

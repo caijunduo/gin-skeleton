@@ -22,6 +22,7 @@ func Setup() *gin.Engine {
 		c.AbortWithStatusJSON(response.NotFound.Slice())
 		return
 	})
+	r.Use(basicMiddleware.Recovery())
 	r.Use(basicMiddleware.Request)
 	r.Use(basicMiddleware.Response)
 	if gin.IsDebugging() {
