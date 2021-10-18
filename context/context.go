@@ -1,21 +1,14 @@
-package request
+package context
 
 import (
 	"bytes"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 )
-
-type DefaultValue interface {
-	Default()
-}
-
-type ValidateValue interface {
-	Validate() error
-}
 
 const (
 	getAllKey  = "__getAll__"
@@ -25,7 +18,37 @@ const (
 	headersKey = "__headers__"
 )
 
-func GetAll(c *gin.Context) (data map[string]interface{}) {
+type HandlerFunc func(*Context)
+
+func Handler(handler HandlerFunc) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx := new(Context)
+		ctx.Context = c
+		_ = c.ShouldBindWith(&ctx.GlobalHeader, binding.Header)
+		handler(ctx)
+	}
+}
+
+type Context struct {
+	*gin.Context
+	GlobalHeader struct {
+		Authorization    string `header:"Authorization"`       // 身份凭证
+		VersionCode      int64  `header:"X-Version-Code"`      // 应用版本
+		VersionName      string `header:"X-Version-Name"`      // 应用版本名称
+		ApiVersion       string `header:"X-API-Version"`       // API版本
+		MacCode          string `header:"X-Mac-Code"`          // Mac地址
+		OsVersion        string `header:"X-OS-Version"`        // 系统版本
+		OsName           string `header:"X-OS-Name"`           // 系统名称
+		ResolutionWidth  string `header:"X-Resolution-Width"`  // 分辨率-宽
+		ResolutionHeight int64  `header:"X-Resolution-Height"` // 分辨率-高
+		PlatformID       int64  `header:"X-Platform-ID"`       // 平台ID
+		PlatformName     string `header:"X-Platform-Name"`     // 平台名称
+		ChannelID        int64  `header:"X-Channel-ID"`        // 渠道ID
+		ChannelName      string `header:"X-Channel-Name"`      // 渠道名称
+	}
+}
+
+func (c *Context) GetAll() (data map[string]interface{}) {
 	if ctxData := c.GetStringMap(getAllKey); ctxData != nil {
 		return ctxData
 	}
@@ -41,14 +64,14 @@ func GetAll(c *gin.Context) (data map[string]interface{}) {
 	return
 }
 
-func PostAll(c *gin.Context) (data map[string]interface{}) {
+func (c *Context) PostAll() (data map[string]interface{}) {
 	if ctxData := c.GetStringMap(postAllKey); ctxData != nil {
 		return ctxData
 	}
 	data = make(map[string]interface{}, 0)
 	if c.Request.Method == http.MethodPost {
 		if c.ContentType() == "application/json" {
-			return JsonAll(c)
+			return c.JsonAll()
 		}
 		if c.Request.ParseForm() == nil {
 			_ = c.Request.ParseMultipartForm(32 << 20)
@@ -70,7 +93,7 @@ func PostAll(c *gin.Context) (data map[string]interface{}) {
 	return
 }
 
-func JsonAll(c *gin.Context) (data map[string]interface{}) {
+func (c *Context) JsonAll() (data map[string]interface{}) {
 	if ctxData := c.GetStringMap(jsonAllKey); ctxData != nil {
 		return ctxData
 	}
@@ -93,25 +116,25 @@ func JsonAll(c *gin.Context) (data map[string]interface{}) {
 	return
 }
 
-func All(c *gin.Context) (data map[string]interface{}) {
+func (c *Context) All() (data map[string]interface{}) {
 	if ctxData := c.GetStringMap(allKey); ctxData != nil {
 		return ctxData
 	}
 	data = make(map[string]interface{}, 0)
-	for k, v := range GetAll(c) {
+	for k, v := range c.GetAll() {
 		data[k] = v
 	}
-	for k, v := range JsonAll(c) {
+	for k, v := range c.JsonAll() {
 		data[k] = v
 	}
-	for k, v := range PostAll(c) {
+	for k, v := range c.PostAll() {
 		data[k] = v
 	}
 	c.Set(allKey, data)
 	return
 }
 
-func Headers(c *gin.Context) (data map[string]string) {
+func (c *Context) Headers() (data map[string]string) {
 	if ctxData := c.GetStringMapString(headersKey); ctxData != nil {
 		return ctxData
 	}
@@ -121,4 +144,11 @@ func Headers(c *gin.Context) (data map[string]string) {
 	}
 	c.Set(headersKey, data)
 	return
+}
+
+func (c *Context) ResponseWriter() *responseWriter {
+	return &responseWriter{
+		ResponseWriter: c.Writer,
+		Body:           bytes.NewBufferString(""),
+	}
 }

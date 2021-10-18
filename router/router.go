@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"skeleton/context"
 	basicMiddleware "skeleton/middleware/basic"
 	"skeleton/response"
 )
@@ -11,7 +12,7 @@ type initialize func(r *gin.RouterGroup)
 
 var initializes = make(map[string]initialize, 0)
 
-//include Add initialization function
+// include Add initialization function
 func include(prefix string, init initialize) {
 	initializes[prefix] = init
 }
@@ -22,13 +23,11 @@ func Setup() *gin.Engine {
 		c.AbortWithStatusJSON(response.NotFound.Slice())
 		return
 	})
-	r.Use(basicMiddleware.Recovery())
-	r.Use(basicMiddleware.Request)
-	r.Use(basicMiddleware.Response)
+	r.Use(context.Handler(basicMiddleware.Recovery))
 	if gin.IsDebugging() {
 		r.Use(cors.Default())
 	} else {
-		r.Use(basicMiddleware.Logger)
+		r.Use(context.Handler(basicMiddleware.Logger))
 	}
 	for prefix, init := range initializes {
 		init(r.Group(prefix))
