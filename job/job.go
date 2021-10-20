@@ -6,6 +6,6 @@ import (
 
 func Recovery() {
 	if rc := recover(); rc != nil {
-		logger.Job.Error(rc)
+		logger.Job.Panic().Stack().Err(rc.(error))
 	}
 }

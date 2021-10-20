@@ -13,7 +13,7 @@ import (
 func GetInfo(c *context.Context) {
 	_, _ = event.Trigger(listener.AccountExampleStart, event.M{})
 	jobrunner.Now(accountJob.SendEmail{})
-	logger.HTTP.Info("Run after SendEmail Job")
+	logger.HTTP.Debug().Msg("Run after SendEmail Job")
 	c.IndentedJSON(response.OK.Slice())
 	_, _ = event.Trigger(listener.AccountExampleEnd, event.M{})
 }

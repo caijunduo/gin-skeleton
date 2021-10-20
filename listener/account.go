@@ -12,11 +12,11 @@ var (
 
 func init() {
 	event.On(AccountExampleStart, event.ListenerFunc(func(e event.Event) error {
-		logger.HTTP.Info("Account Example Start")
+		logger.HTTP.Debug().Msg("Account Example Start")
 		return nil
 	}))
 	event.On(AccountExampleEnd, event.ListenerFunc(func(e event.Event) error {
-		logger.HTTP.Info("Account Example End")
+		logger.HTTP.Debug().Msg("Account Example End")
 		return nil
 	}))
 }

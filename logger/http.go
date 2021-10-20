@@ -1,19 +1,17 @@
 package logger
 
 import (
-	formatter "github.com/antonfisher/nested-logrus-formatter"
-	"github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"os"
 )
 
-var HTTP *logrus.Logger
+var HTTP zerolog.Logger
 
 func init() {
-	HTTP = logrus.New()
-	HTTP.SetLevel(logrus.TraceLevel)
-	HTTP.SetFormatter(&formatter.Formatter{
-		TimestampFormat: "2006-01-02 15:04:05",
-		HideKeys:        true,
-		FieldsOrder:     []string{"type"},
-	})
-	HTTP.AddHook(&loggerHook{typeName: "http"})
+	HTTP = log.Output(zerolog.ConsoleWriter{
+		Out:         os.Stderr,
+		FormatLevel: consoleFormatLevel("Http", false),
+		TimeFormat:  "2006-01-02 15:04:05",
+	}).With().Timestamp().Logger()
 }
