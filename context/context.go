@@ -146,9 +146,11 @@ func (c *Context) Headers() (data map[string]string) {
 	return
 }
 
-func (c *Context) ResponseWriter() *responseWriter {
-	return &responseWriter{
+func (c *Context) Response() *responseWriter {
+	writer := &responseWriter{
 		ResponseWriter: c.Writer,
 		Body:           bytes.NewBufferString(""),
 	}
+	c.Writer = writer
+	return writer
 }

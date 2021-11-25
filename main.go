@@ -4,7 +4,9 @@ import (
 	_ "github.com/joho/godotenv/autoload" // 自动加载.env环境变量
 	"github.com/spf13/cast"
 	"golang.org/x/sync/errgroup"
+	"log"
 	"net/http"
+	"skeleton/code"
 	"skeleton/config"
 	"skeleton/router"
 	"time"
@@ -13,6 +15,8 @@ import (
 var g errgroup.Group
 
 func main() {
+	log.Println(code.OK)
+
 	s := &http.Server{
 		Addr:         config.Server.Host + ":" + cast.ToString(config.Server.Port),
 		Handler:      router.Setup(),

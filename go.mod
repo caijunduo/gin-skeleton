@@ -3,7 +3,6 @@ module skeleton
 go 1.15
 
 require (
-	github.com/antonfisher/nested-logrus-formatter v1.3.1
 	github.com/bamzi/jobrunner v1.0.0
 	github.com/caarlos0/env/v6 v6.7.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -21,11 +20,13 @@ require (
 	github.com/onsi/ginkgo v1.16.4 // indirect
 	github.com/onsi/gomega v1.13.0 // indirect
 	github.com/rs/zerolog v1.25.0
-	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cast v1.3.1
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/uniplaces/carbon v0.1.6
+	golang.org/x/mod v0.5.1 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
+	golang.org/x/sys v0.0.0-20211103235746-7861aae1554b // indirect
+	golang.org/x/tools v0.1.7 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 	upper.io/db.v3 v3.8.0+incompatible
